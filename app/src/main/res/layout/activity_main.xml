@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
@@ -7,26 +7,30 @@
     android:layout_height="match_parent"
     android:background="@mipmap/pink_gradient"
     tools:context="usagitoneko.androidcontrolledwheelchair.MainActivity">
-    <com.jmedeisis.bugstick.Joystick
-        android:id="@+id/joystick"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:background="@drawable/bg_base"
-        tools:layout_constraintTop_creator="1"
+
+    <View
+        android:id="@+id/lineIndicator"
+        android:layout_width="1dp"
+        android:layout_height="3dp"
+        android:background="@color/grey_500"
+        android:rotation="90"
+        android:transformPivotX="2dp"
+        android:transformPivotY="2dp"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.35000002"
+        tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-        <Button
-            android:layout_width="@dimen/stick_size"
-            android:layout_height="@dimen/stick_size"
-            android:background="@drawable/bg_stick"
-            app:start_on_first_touch="true"
-            app:force_square="true"
-            app:motion_constraint="None"/>
-        <!-- You may use any View here. -->
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
 
-
-    </com.jmedeisis.bugstick.Joystick>
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/guideline"
+        app:layout_constraintGuide_begin="205dp"
+        android:orientation="vertical" />
 
     <mehdi.sakout.fancybuttons.FancyButton
         android:id="@+id/uTurnButton"
@@ -49,13 +53,17 @@
         android:layout_alignTop="@+id/forceStop"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="41dp"
-        android:layout_marginEnd="41dp" />
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/joystick"
+        app:layout_constraintTop_toTopOf="@+id/joystick"
+        android:layout_marginLeft="42dp"
+        android:layout_marginTop="426dp"
+        android:layout_marginStart="42dp" />
     <mehdi.sakout.fancybuttons.FancyButton
         android:id="@+id/forceStop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
         android:paddingBottom="10dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
@@ -73,8 +81,36 @@
         android:layout_below="@+id/joystick"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="31dp"
-        android:layout_marginStart="31dp" />
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/joystick"
+        app:layout_constraintTop_toTopOf="@+id/joystick"
+        android:layout_marginLeft="234dp"
+        android:layout_marginTop="426dp"
+        android:layout_marginStart="234dp" />
+
+    <com.jmedeisis.bugstick.Joystick
+        android:id="@+id/joystick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="-16dp"
+        android:layout_marginTop="0dp"
+        android:background="@drawable/bg_base"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_constraintTop_creator="1">
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="144dp"
+            android:layout_height="@dimen/stick_size"
+            android:background="@drawable/bg_stick"
+            app:force_square="true"
+            app:motion_constraint="None"
+            app:start_on_first_touch="true" />
+        <!-- You may use any View here. -->
 
 
-</RelativeLayout>
+    </com.jmedeisis.bugstick.Joystick>
+</android.support.constraint.ConstraintLayout>
