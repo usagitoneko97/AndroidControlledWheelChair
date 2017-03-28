@@ -1,5 +1,6 @@
 package usagitoneko.androidcontrolledwheelchair;
 
+import android.graphics.Color;
 import android.provider.SyncStateContract;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.ActionBar;
@@ -8,8 +9,10 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -23,6 +26,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.jmedeisis.bugstick.Joystick;
 import com.jmedeisis.bugstick.JoystickListener;
+import com.robinhood.ticker.TickerUtils;
+import com.robinhood.ticker.TickerView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,18 +35,35 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import static android.provider.Telephony.Carriers.PASSWORD;
+import usagitoneko.androidcontrolledwheelchair.Widget.Croller;
+
 
 public class MainActivity extends AppCompatActivity {
     View lineIndicator;
+    private TickerView kmperH;
+    private Croller croller;
     int[] location = new int[2];
-    final String USERNAME = "hgx1997";
-    final String PASSWORD = "hxg138854";
+    final String USERNAME = "acsa";
+    final String PASSWORD = "1234";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lineIndicator = findViewById(R.id.lineIndicator);
+
+        kmperH = (TickerView)findViewById(R.id.kmPerH);
+        kmperH.setCharacterList(TickerUtils.getDefaultNumberList());
+        kmperH.setText("Km/H");
+        kmperH.bringToFront();
+
+        croller = (Croller)findViewById(R.id.croller);
+        croller = initCroller(croller);
+        croller.setMax(100);
+
+        final TickerView speedIndicator =(TickerView) findViewById(R.id.speedIndicator);
+        speedIndicator.setCharacterList(TickerUtils.getDefaultNumberList());
+        speedIndicator.bringToFront();
+
         lineIndicator.bringToFront();
 
         Joystick joystick = (Joystick) findViewById(R.id.joystick);
@@ -49,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDown() {
                 // ..
+                speedIndicator.setText("45");
             }
 
             @Override
@@ -60,41 +83,49 @@ public class MainActivity extends AppCompatActivity {
                 lineIndicator.setX(701);
                 lineIndicator.setY(726);
 
+                croller.setProgress(Math.round(offset*100));
             }
 
             @Override
             public void onUp() {
                 lineIndicator.setLayoutParams(new ConstraintLayout.LayoutParams(1,1 ));
-
+                speedIndicator.setText("23");
                 // ..
             }
         });
 
 
+
+    }
+
+    private Croller initCroller(Croller croller){
+        croller.setIndicatorWidth(10);
+
+        return croller;
+    }
+
+    private boolean sendCommand (float degrees, float offset){
+        // TODO: 3/28/2017 send degrees and offset as json object
         final String URL = "https://raw.githubusercontent.com/usagitoneko97/AndroidControlledWheelChair/master/UltimateJsonDummy.json";
 // Post params to be sent to the server
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("token", "AbCdEfGh123456");
 
-        StringRequest req = new StringRequest(Request.Method.POST,URL, new Response.Listener<String>() {
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.POST, URL, null, new Response.Listener<JSONObject>() {
+
                     @Override
-                    public void onResponse(String response) {
-                      Log.d("Response", response);
+                    public void onResponse(JSONObject response) {
+                        //mTxtDisplay.setText("Response: " + response.toString());
                     }
                 }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("Volley", "ERROR");
-                Toast.makeText(MainActivity.this, "ERROR!!!", Toast.LENGTH_SHORT).show();
-            }
-        }){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                //headers here
-                return headers;
-            }
 
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO Auto-generated method stub
+
+                    }
+                }){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<String, String>();
@@ -103,9 +134,11 @@ public class MainActivity extends AppCompatActivity {
                 return params;
             }
         };
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(req);
-    }
 
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsObjRequest);
+        return true;
+    }
 
 }

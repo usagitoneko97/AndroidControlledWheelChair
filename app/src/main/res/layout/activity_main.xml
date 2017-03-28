@@ -22,7 +22,6 @@
         app:layout_constraintVertical_bias="0.35000002"
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1" />
 
     <android.support.constraint.Guideline
@@ -30,7 +29,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/guideline"
         app:layout_constraintGuide_begin="205dp"
-        android:orientation="vertical" />
+        android:orientation="vertical"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="205dp" />
 
     <mehdi.sakout.fancybuttons.FancyButton
         android:id="@+id/uTurnButton"
@@ -58,43 +59,13 @@
         app:layout_constraintLeft_toLeftOf="@+id/joystick"
         app:layout_constraintTop_toTopOf="@+id/joystick"
         android:layout_marginLeft="42dp"
-        android:layout_marginTop="426dp"
+        android:layout_marginTop="411dp"
         android:layout_marginStart="42dp" />
-    <mehdi.sakout.fancybuttons.FancyButton
-        android:id="@+id/forceStop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="10dp"
-        fancy:fb_borderColor="#FFFFFF"
-        fancy:fb_borderWidth="1dp"
-        fancy:fb_defaultColor="#7ab800"
-        fancy:fb_focusColor="#9bd823"
-        fancy:fb_fontIconResource="&#xf28d;"
-        fancy:fb_iconPosition="left"
-        fancy:fb_radius="30dp"
-        fancy:fb_text="Force Stop"
-        fancy:fb_textColor="#FFFFFF"
-        fancy:fb_fontIconSize = "30dp"
-        android:layout_below="@+id/joystick"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/joystick"
-        app:layout_constraintTop_toTopOf="@+id/joystick"
-        android:layout_marginLeft="234dp"
-        android:layout_marginTop="426dp"
-        android:layout_marginStart="234dp" />
 
     <com.jmedeisis.bugstick.Joystick
         android:id="@+id/joystick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="-16dp"
-        android:layout_marginTop="0dp"
         android:background="@drawable/bg_base"
 
         app:layout_constraintLeft_toLeftOf="parent"
@@ -113,4 +84,86 @@
 
 
     </com.jmedeisis.bugstick.Joystick>
+
+    <mehdi.sakout.fancybuttons.FancyButton
+        android:id="@+id/forceStop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/joystick"
+        android:layout_marginLeft="234dp"
+        android:layout_marginStart="234dp"
+        android:layout_marginTop="411dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        app:layout_constraintLeft_toLeftOf="@+id/joystick"
+        app:layout_constraintTop_toTopOf="@+id/joystick"
+        fancy:fb_borderColor="#FFFFFF"
+        fancy:fb_borderWidth="1dp"
+        fancy:fb_defaultColor="#7ab800"
+        fancy:fb_focusColor="#9bd823"
+        fancy:fb_fontIconResource="&#xf28d;"
+        fancy:fb_fontIconSize="30dp"
+        fancy:fb_iconPosition="left"
+        fancy:fb_radius="30dp"
+        fancy:fb_text="Force Stop"
+        fancy:fb_textColor="#FFFFFF"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+    <com.robinhood.ticker.TickerView
+        android:id="@+id/speedIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/uTurnButton"
+        app:ticker_animationDuration="800"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        android:layout_marginTop="32dp" />
+
+    <com.robinhood.ticker.TickerView
+        android:id="@+id/kmPerH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintTop_toBottomOf="@+id/speedIndicator"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary" />
+
+    <usagitoneko.androidcontrolledwheelchair.Widget.Croller
+        android:id="@+id/croller"
+        app:back_circle_color="#EDEDED"
+        app:indicator_color="#0B3C49"
+        app:indicator_width="10"
+        app:is_continuous="true"
+        app:label_color="#000000"
+        app:main_circle_color="#FFFFFF"
+        app:max="1000"
+        app:progress_primary_color="#0B3C49"
+        app:progress_secondary_color="#EEEEEE"
+        app:progress_primary_circle_size= "20"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:clickable="false"
+        app:layout_constraintRight_toLeftOf="@+id/guideline"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        app:layout_constraintTop_toBottomOf="@+id/uTurnButton"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline" />
+
 </android.support.constraint.ConstraintLayout>
