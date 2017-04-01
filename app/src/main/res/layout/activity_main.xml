@@ -86,7 +86,7 @@
     </com.jmedeisis.bugstick.Joystick>
 
     <mehdi.sakout.fancybuttons.FancyButton
-        android:id="@+id/forceStop"
+        android:id="@+id/forceStopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
