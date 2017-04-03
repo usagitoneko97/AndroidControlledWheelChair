@@ -40,15 +40,18 @@ import mehdi.sakout.fancybuttons.FancyButton;
 import usagitoneko.androidcontrolledwheelchair.Widget.Croller;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     View lineIndicator;
     private TickerView kmperH;
     private Croller croller;
     private FancyButton uTurnButton;
     private FancyButton forceStopButton;
     int[] location = new int[2];
-    final String USERNAME = "we success!!!!";
-    final String PASSWORD = "1234";
+
+    private static final String UTURN = "uturn";
+    private static final String FORCESTOP = "forcestop";
+    private static final String MOVE = "body";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
         uTurnButton = (FancyButton)findViewById(R.id.uTurnButton);
         forceStopButton = (FancyButton)findViewById(R.id.forceStopButton);
+        uTurnButton.setOnClickListener(this);
+        forceStopButton.setOnClickListener(this);
 
         final TickerView speedIndicator =(TickerView) findViewById(R.id.speedIndicator);
         speedIndicator.setCharacterList(TickerUtils.getDefaultNumberList());
@@ -80,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
             public void onDown() {
                 // ..
                 speedIndicator.setText("45");
-                sendCommand(1);
             }
 
             @Override
@@ -92,13 +96,14 @@ public class MainActivity extends AppCompatActivity {
                 lineIndicator.setX(701);
                 lineIndicator.setY(726);
                 croller.setProgress(Math.round(offset*100));
+                sendCommand("body",offset, degrees);
             }
 
             @Override
             public void onUp() {
                 lineIndicator.setLayoutParams(new ConstraintLayout.LayoutParams(1,1 ));
                 speedIndicator.setText("23");
-                sendCommand(0);
+                sendCommand(MOVE, 0, 0);
                 // ..
             }
         });
@@ -107,37 +112,38 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.uTurnButton:
+                sendCommand(UTURN, 0,0);
+                break;
+            case R.id.forceStopButton:
+                sendCommand(FORCESTOP,0,0);
+                break;
+        }
+    }
+
     private Croller initCroller(Croller croller){
         croller.setIndicatorWidth(10);
 
         return croller;
     }
 
-    private boolean sendCommand (int status){
+    private boolean sendCommand (final String operation, final float offset, final float degrees){
         // TODO: 3/28/2017 send degrees and offset as json object
 
         StringBuilder uRLBuilder = new StringBuilder();
-        uRLBuilder.append("http://192.168.4.1/led/");
-        uRLBuilder.append(status);
+        uRLBuilder.append("http://192.168.95.122/");
+        uRLBuilder.append(operation);
         String URL = uRLBuilder.toString();
-        String mURL = "http://192.168.4.1/gpio/0";
-        //final String URL = "http://192.168.4.1/led/1";
-// Post params to be sent to the server
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("speed", "AbCdEfGh123456");
-        params.put("angle", "360");
-
-        try {
-            JSONObject jsonBody = new JSONObject();
-            jsonBody.put("speed", "success");
-            jsonBody.put("angle", "360");
-            final String mRequestBody = jsonBody.toString();
 
             JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                    (Request.Method.POST, mURL, null,new Response.Listener<JSONObject>() {
+                    (Request.Method.POST, URL, null,new Response.Listener<JSONObject>() {
 
                         @Override
                         public void onResponse(JSONObject response) {
+                            Log.d("response", response.toString());
                             //mTxtDisplay.setText("Response: " + response.toString());
                         }
                     }, new Response.ErrorListener() {
@@ -148,79 +154,38 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     }) {
-           /* @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> params = new HashMap<String, String>();
-                params.put("Content-Type","application/json");
-                return params;
-            }*/
-                /*@Override
-                public String getBodyContentType() {
-                    return "text/html";
-                }
-*/
+
                 @Override
-                public byte[] getBody()  {
-                   /* try {
-                        return mRequestBody == null? null : mRequestBody.getBytes("utf-8");
-                    }
-                    catch (UnsupportedEncodingException e){
-                        e.printStackTrace();
+                public byte[] getBody() {
+                    //send body only if the operation is MOVE
+                    if (operation == MOVE) {
+                        JSONObject jsonObject = new JSONObject();
+                        String body = null;
+                        try {
+                            jsonObject.put("offset", offset);
+                            jsonObject.put("degrees", degrees);
+
+                            body = jsonObject.toString();
+
+
+
+                            return body.toString().getBytes("utf-8");
+                        } catch (UnsupportedEncodingException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        } catch (JSONException e){
+                            e.printStackTrace();
+                        }
                         return null;
-                    }*/
-                    JSONObject jsonObject = new JSONObject();
-                    String body = null;
-                    try
-                    {
-                        jsonObject.put("username", "user123");
-                        jsonObject.put("password", "Pass123");
-
-                        body = jsonObject.toString();
-                    } catch (JSONException e)
-                    {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-
-                    try
-                    {
-                        return body.toString().getBytes("utf-8");
-                    } catch (UnsupportedEncodingException e)
-                    {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
                     }
                     return null;
                 }
             };
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, mURL,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            // your response
 
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    // error
-                }
-            }){
-                @Override
-                public byte[] getBody() throws AuthFailureError {
-                    String your_string_json = "you have success!!" ; // put your json
-                    return your_string_json.getBytes();
-                }
-            };
-            
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+        requestQueue.add(jsObjRequest);
 
-        }
-        catch (JSONException e){
-            e.printStackTrace();
-        }
         return true;
     }
 
