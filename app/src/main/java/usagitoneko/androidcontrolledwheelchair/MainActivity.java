@@ -137,7 +137,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         uRLBuilder.append("http://192.168.95.122/");
         uRLBuilder.append(operation);
         String URL = uRLBuilder.toString();
-
             JsonObjectRequest jsObjRequest = new JsonObjectRequest
                     (Request.Method.POST, URL, null,new Response.Listener<JSONObject>() {
 
@@ -181,7 +180,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return null;
                 }
             };
-
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(jsObjRequest);
